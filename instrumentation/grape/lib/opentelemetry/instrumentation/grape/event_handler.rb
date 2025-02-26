@@ -93,7 +93,13 @@ module OpenTelemetry
             return '' unless endpoint.routes
 
             namespace = endpoint.routes.first.namespace
-            version = endpoint.routes.first.options[:version]&.to_s
+            # version = endpoint.routes.first.options[:version]&.to_s
+            if endpoint.routes.first.options[:version].kind_of?(Array)
+              version = endpoint.routes.first.options[:version].join('-')
+            else
+              version = endpoint.routes.first.options[:version]&.to_s
+            end
+
             prefix = endpoint.routes.first.options[:prefix]&.to_s
             parts = [prefix, version] + namespace.split('/') + endpoint.options[:path]
             parts.reject { |p| p.nil? || p.empty? || p.eql?('/') }.join('/').prepend('/')
